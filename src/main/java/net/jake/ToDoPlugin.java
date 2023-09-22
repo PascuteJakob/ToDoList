@@ -1,4 +1,4 @@
-package com.example;
+package net.jake;
 
 import com.google.inject.Provides;
 import javax.inject.Inject;
@@ -11,18 +11,22 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.ui.overlay.OverlayPanel;
+import net.runelite.client.ui.overlay.OverlayPosition;
+import net.runelite.client.ui.overlay.OverlayPriority;
+import net.runelite.client.ui.overlay.components.LineComponent;
 
 @Slf4j
 @PluginDescriptor(
-	name = "Example"
+	name = "ToDo"
 )
-public class ExamplePlugin extends Plugin
+public class ToDoPlugin extends Plugin
 {
 	@Inject
 	private Client client;
 
 	@Inject
-	private ExampleConfig config;
+	private ToDoConfig config;
 
 	@Override
 	protected void startUp() throws Exception
@@ -41,13 +45,13 @@ public class ExamplePlugin extends Plugin
 	{
 		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
 		{
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Example says " + config.greeting(), null);
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "ROCK SAIS THIS:  " + config.greeting(), null);
 		}
 	}
 
 	@Provides
-	ExampleConfig provideConfig(ConfigManager configManager)
+	ToDoConfig provideConfig(ConfigManager configManager)
 	{
-		return configManager.getConfig(ExampleConfig.class);
+		return configManager.getConfig(ToDoConfig.class);
 	}
 }
