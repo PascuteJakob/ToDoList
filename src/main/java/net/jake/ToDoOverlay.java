@@ -5,7 +5,10 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.util.EnumSet;
 import javax.inject.Inject;
+
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.MenuAction;
 import net.runelite.api.WorldType;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -20,9 +23,10 @@ class ToDoOverlay extends Overlay {
 
     @Inject
     private ToDoOverlay(Client client, ToDoConfig config) {
-        setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
+        setPosition(OverlayPosition.BOTTOM_LEFT);
         this.client = client;
         this.config = config;
+        addMenuEntry(MenuAction.RUNELITE_OVERLAY, "Add item", "To Do", e -> addEntry());
     }
 
     @Override
@@ -30,24 +34,29 @@ class ToDoOverlay extends Overlay {
     {
         panelComponent.getChildren().clear();
         String overlayTitle = "To Do";
+        String lineOne = "this is a test line";
 
         //Build the overlay title
         panelComponent.getChildren().add(TitleComponent.builder()
                 .text(overlayTitle)
-                .color(Color.GREEN)
+                .color(Color.WHITE)
                 .build());
 
-        //Set the size of the overlay (width)
+        //Set the size of the overlay
         panelComponent.setPreferredSize(new Dimension(
-                graphics.getFontMetrics().stringWidth(overlayTitle) + 30,
+                200,
                 0));
 
-        // Add a line on the overlay for world number
+        // Add line under title
         panelComponent.getChildren().add(LineComponent.builder()
-                .left("smol test")
-                .right("BIG TEST")
+                .left(lineOne)
+                //.right("BIG TEST")
                 .build());
 
         return panelComponent.render(graphics);
+    }
+    private void addEntry()
+    {
+        client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "test", null);
     }
 }
