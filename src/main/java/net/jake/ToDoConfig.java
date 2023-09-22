@@ -4,16 +4,17 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-@ConfigGroup("example")
+@ConfigGroup("ToDo")
 public interface ToDoConfig extends Config
 {
-	@ConfigItem(
-		keyName = "greeting",
-		name = "Welcome Greeting",
-		description = "The message to show to the user when they login"
-	)
-	default String greeting()
-	{
-		return "Hello";
-	}
+    @ConfigItem(
+            position = 1,
+            keyName = "showWorldType",
+            name = "Show the current world type",
+            description = "Toggle the display of the current world type"
+    )
+    default boolean showWorldType()
+    {
+        return false;
+    }
 }
