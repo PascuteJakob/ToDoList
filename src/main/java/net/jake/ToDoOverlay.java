@@ -15,11 +15,15 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
 import net.runelite.client.ui.overlay.components.LineComponent;
+import java.util.ArrayList;
+
 
 class ToDoOverlay extends Overlay {
     private final Client client;
     private final ToDoConfig config;
     private final PanelComponent panelComponent = new PanelComponent();
+    private ToDos todos;
+
 
     @Inject
     private ToDoOverlay(Client client, ToDoConfig config) {
@@ -27,6 +31,19 @@ class ToDoOverlay extends Overlay {
         this.client = client;
         this.config = config;
         addMenuEntry(MenuAction.RUNELITE_OVERLAY, "Add item", "To Do", e -> addEntry());
+
+        //Create list object and add to global var
+        todos = new ToDos();
+        ArrayList<String> toDoList = todos.getToDoList();
+        //Iterate to add menu entries
+        int count = 0;
+        for(String i : toDoList)
+        {
+            final int index = count;
+            addMenuEntry(MenuAction.RUNELITE_OVERLAY, "Complete item", "To Do: " + String.valueOf(count), e -> completeEntry(index));
+            addMenuEntry(MenuAction.RUNELITE_OVERLAY, "Delete item", "To Do: " + String.valueOf(count), e -> deleteEntry(index));
+            count += 1;
+        }
     }
 
     @Override
@@ -47,16 +64,32 @@ class ToDoOverlay extends Overlay {
                 200,
                 0));
 
-        // Add line under title
-        panelComponent.getChildren().add(LineComponent.builder()
-                .left(lineOne)
-                //.right("BIG TEST")
-                .build());
+        // Add lines
+        int count = 0;
+        ArrayList<String> toDoList = todos.getToDoList();
+        for(String i : toDoList)
+        {
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left(String.valueOf(count) + ") " + i)
+                    //.right("BIG TEST")
+                    .build());
+            count += 1;
+        }
 
         return panelComponent.render(graphics);
     }
     private void addEntry()
     {
-        client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "test", null);
+        client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "add", null);
+    }
+    private void deleteEntry(int index)
+    {
+        //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", ToDoList[index], null);
+        todos.getToDoList().remove(index);
+
+    }
+    private void completeEntry(int index)
+    {
+        client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", todos.getToDoList().get(index), null);
     }
 }
