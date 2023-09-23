@@ -3,13 +3,11 @@ package net.jake;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.util.EnumSet;
 import javax.inject.Inject;
 
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.MenuAction;
-import net.runelite.api.WorldType;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.PanelComponent;
@@ -19,22 +17,22 @@ import java.util.ArrayList;
 
 
 class ToDoOverlay extends Overlay {
-    private final Client client;
-    private final ToDoConfig config;
+    private ToDoConfig config;
     private final PanelComponent panelComponent = new PanelComponent();
-    private ToDos todos;
+    private ToDoHelper todos;
+    private Client client;
 
 
-    @Inject
-    private ToDoOverlay(Client client, ToDoConfig config) {
+
+    public ToDoOverlay(Client client, ToDoConfig config) {
         setPosition(OverlayPosition.BOTTOM_LEFT);
         this.client = client;
         this.config = config;
         addMenuEntry(MenuAction.RUNELITE_OVERLAY, "Add item", "To Do", e -> addEntry());
 
         //Create list object and add to global var
-        todos = new ToDos();
-        ArrayList<String> toDoList = todos.getToDoList();
+        todos = new ToDoHelper(config);
+        ArrayList<String> toDoList = todos.getToDoListText();
         //Iterate to add menu entries
         int count = 0;
         for(String i : toDoList)
@@ -66,8 +64,8 @@ class ToDoOverlay extends Overlay {
 
         // Add lines
         int count = 0;
-        ArrayList<String> toDoList = todos.getToDoList();
-        for(String i : toDoList)
+        ArrayList<String> toDoListText = todos.getToDoListText();
+        for(String i : toDoListText)
         {
             panelComponent.getChildren().add(LineComponent.builder()
                     .left(String.valueOf(count) + ") " + i)
@@ -85,11 +83,11 @@ class ToDoOverlay extends Overlay {
     private void deleteEntry(int index)
     {
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", ToDoList[index], null);
-        todos.getToDoList().remove(index);
+        todos.getToDoListText().remove(index);
 
     }
     private void completeEntry(int index)
     {
-        client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", todos.getToDoList().get(index), null);
+        client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", todos.getToDoListText().get(index), null);
     }
 }

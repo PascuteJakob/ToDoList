@@ -7,6 +7,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.api.Client;
 
 
 
@@ -19,11 +20,14 @@ public class ToDoPlugin extends Plugin
 	@Inject
 	private OverlayManager overlayManager;
 
-	@Inject
+	//@Inject
 	private ToDoOverlay overlay;
 
 	@Inject
 	private ToDoConfig config;
+
+	@Inject
+	Client client;
 
 	@Provides
 	ToDoConfig provideConfig(ConfigManager configManager)
@@ -34,6 +38,7 @@ public class ToDoPlugin extends Plugin
 	@Override
 	protected void startUp() throws Exception
 	{
+		overlay = new ToDoOverlay(client,config);
 		overlayManager.add(overlay);
 	}
 
